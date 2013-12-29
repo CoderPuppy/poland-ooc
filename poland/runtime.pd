@@ -1,0 +1,133 @@
+R = Something create
+
+R Origin = Something create
+
+R DefaultBehavior = R Origin mimic
+R DefaultBehavior mimic = DefaultBehavior cell(:mimic)
+R DefaultBehavior cell = DefaultBehavior cell(:cell)
+
+R Mixin = R DefaultBehavior mimic
+
+# R DefaultBehavior = = rawFn(cell, val,
+# 	Reflector other:=(self, cell, val)
+# )
+
+R Something = Something extend
+
+R Reflector = R Something create
+R Reflector other:mimic = Reflector cell(:other:mimic)
+
+/# R Kind = new O
+# let @ = R Kind
+# 	@cells[\:prototype] = new O
+# 	@mimic @cell(\:prototype)
+
+# 	let @ = @cell(\:prototype)
+# 		@cells[\:initialize] = (call) ->
+# 			@cells[\:prototype] = new O(R Something)
+# 			@extend = R Kind.extend
+# 			@create = R Kind.create
+
+# 		@extend = ->
+# 			k = new O(R Kind::)
+
+# 			k:: = new O(@::)
+
+# 			k
+
+# 		@create = ->
+# 			o = new O(@cell(\:prototype))
+
+# 			o.send(\initialize, ...)
+
+# 			o
+
+# 		@cells[\:create] = (call) ~>
+# 			self = call.receiver
+# 			msg  = call.msg
+# 			args = msg.args
+
+# 			@create.call(self, ...args)
+
+# 		@cells[\:extend] = (call) ~>
+# 			self = call.receiver
+
+# 			@extend.call(self)
+
+# 	@extend = @cell(\:prototype).extend
+# 	@create = @cell(\:prototype).create
+
+# R Something = R Kind.create!
+# let @ = R Something
+# 	let @ = @cell(\:prototype)
+# 		@mimic R DefaultBehavior
+
+# 		@cells[\:initialize] = 'hi'
+
+# R Kind.cell(\:prototype).mimic R Something
+
+# R NativeFunction = new O(R DefaultBehavior)
+
+# 	# (@fn) -> super!
+
+# 	# activatable: true
+
+# 	# activate: (call) ->
+# 	# 	@fn(call)
+
+# 	# @::cells = Object.create(R DefaultBehavior::cells)
+
+# R Call = R Something.extend!
+# 	# (@ground, @seq, @self, @msg) -> super!
+
+# R String = R Something.extend!
+# 	# (@val) -> super!
+# 	# inspect: -> util.inspect(@val)
+# 	# id: -> "s#{@val}"
+
+# R Symbol = R Something.extend!
+# 	# (@val) -> super!
+# 	# inspect: -> ":#{util.inspect(@val)}"
+# 	# id: -> ":#{@val}"
+
+# R Number = R Something.extend!
+# 	# (@val) -> super!
+# 	# inspect: -> util.inspect(@val)
+
+# R Ground = R Something.extend!
+# 	# receive: (call) ->
+# 	# 	msg = call.msg
+
+# 	# 	switch msg.id.constructor
+# 	# 	| R String => msg.id
+# 	# 	| R Symbol =>
+# 	# 		if parseInt(msg.id.val)
+# 	# 			new R Number(parseInt(msg.id.val))
+# 	# 		else
+# 	# 			super(...)
+# 	# 	| _ => super(...)
+
+# 	# @::cells = {}
+
+# # R methods =
+# # 	'internal:createSymbol': new R NativeFunction (call) -> call.msg.args[0].msgs[0].id
+# # 	'=': new R NativeFunction (call) ->
+# # 		msg = call.msg
+# # 		args = msg.args
+# # 		self = call.receiver
+# # 		self.cells[args[0].msgs[0].id.id!] = I(call.ground, args[1])
+
+# R Parser = R Something.create!
+# let @ = R Parser
+# 	@parse = parseR parse
+
+# 	@Shuffler = R Something.create!
+# 	let @ = @Shuffler
+# 		@assignment = shuffleR assignment#/
+
+R Interpreter = R Something create
+R Interpreter run = Interpreter cell(:run)
+
+R Origin removeAllMimics
+
+R
