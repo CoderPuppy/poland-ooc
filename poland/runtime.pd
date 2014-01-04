@@ -8,9 +8,10 @@ R DefaultBehavior cell = DefaultBehavior cell(:cell)
 
 R Mixin = R DefaultBehavior mimic
 
-# R DefaultBehavior = = rawFn(cell, val,
-# 	Reflector other:=(self, cell, val)
-# )
+R DefaultBehavior = = rawFn(cell, val,
+	Reflector other:=(self, cell, val)
+)
+
 
 R Something = Something extend
 
@@ -131,3 +132,5 @@ R Interpreter run = Interpreter cell(:run)
 R Origin removeAllMimics
 
 R
+
+"hi"

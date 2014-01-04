@@ -1,79 +1,201 @@
 import structs/ArrayList
 import Token
+import matching into P
 
 PLexerMode: abstract class {
 	process: abstract func(c: Char, lexer: PLexer) -> Bool
+	enter: func(lexer: PLexer)
+	leave: func(lexer: PLexer)
 	dup: abstract func -> This
 }
 
 PLexerMultCharMode: abstract class extends PLexerMode {
-	maxChars: Int
+	max := INT_MAX
 
-	data: String
+	type: PTokenType
+	data := ""
 
-	init: func(=maxChars) {
-		data = ""
-	}
-	init: func~any { init(INT_MAX) }
+	init: func~name(=type, =max)
+	init: func~name_any(=type)
 
 	check: abstract func(c: Char, lexer: PLexer) -> Bool
 
-	process: func(c: Char, lexer: PLexer) {
-		data += c toString()
+	offset: Long
+	line: Int
+	column: Int
 
-		len := data length()
+	process: func(c: Char, lexer: PLexer) -> Bool {
+		if(check(c, lexer)) {
+			data += c toString()
 
-		if(len == maxChars) {
-			lexer emit(PToken new(data, data))
-			lexer mode = null
+			if(data length() == max) {
+				lexer leave()
+			}
+
+			return true
+		} else {
+			return false
 		}
+	}
+
+	enter: func(lexer: PLexer) {
+		offset = lexer offset
+		line = lexer line
+		column = lexer column
+	}
+
+	leave: func(lexer: PLexer) {
+		lexer emit(PToken new(type, data, offset, line, column))
 	}
 }
 
-PLexerAnyCharMode: class extends PLexerMultCharMode {
-	init: func(=maxChars)
-	init: func~any
+PLexerMatcherMode: class extends PLexerMultCharMode {
+	matcher: (P Matcher)
 
-	check: func(c: Char, lexer: PLexer) -> Bool { true }
-	dup: func -> This { This new(maxChars) }
+	init: func~name(=type, =matcher, =max)
+	init: func~name_any(=type, =matcher)
+
+	check: func(c: Char, lexer: PLexer) -> Bool { matcher check(c) }
+
+	dup: func -> This { This new(type, matcher, max) }
 }
 
 PLexer: class {
-	/*
-	
-	*/
-
 	mode: PLexerMode
 	modes := ArrayList<PLexerMode> new()
 
-	init: func~mode(=mode) {
-		init()
+	offset := 0l
+	line := 1
+	column := 1
+
+	init: func { init(true) }
+	init: func~s(sugar: Bool) {
+		if(sugar) {
+			// '{'
+			modes add(PLexerMatcherMode new(PTokenType openCurly, P char('{')))
+			// '}'
+			modes add(PLexerMatcherMode new(PTokenType closeCurly, P char('}')))
+			// '['
+			modes add(PLexerMatcherMode new(PTokenType openSquare, P char('[')))
+			// ']'
+		}
+
+		modes add(PLexerMatcherMode new(PTokenType closeSquare, P char(']')))
+		// ','
+		modes add(PLexerMatcherMode new(PTokenType comma, P char(',')))
+		// '/'
+		modes add(PLexerMatcherMode new(PTokenType fwdSlash, P char('/')))
+		// '\\'
+		modes add(PLexerMatcherMode new(PTokenType backslash, P char('\\')))
+		// '#'
+		modes add(PLexerMatcherMode new(PTokenType lineCommentBegin, P char('#')))
+		// '\n'
+		modes add(PLexerMatcherMode new(PTokenType newline, P or(P char('\n'), P char('\r')), 1))
+		// ('\t' | ' ')+
+		modes add(PLexerMatcherMode new(PTokenType whitespace, P or(P char('\t'), P char(' '))))
+		// '('
+		modes add(PLexerMatcherMode new(PTokenType openParen, P char('('), 1))
+		// ')'
+		modes add(PLexerMatcherMode new(PTokenType closeParen, P char(')'), 1))
+		// '"'
+		modes add(PLexerMatcherMode new(PTokenType dquote, P char('"'), 1))
+		// '\''
+		modes add(PLexerMatcherMode new(PTokenType squote, P char('\''), 1))
+		// '.'
+		modes add(PLexerMatcherMode new(PTokenType reset, P char('.'), 1))
+
+		nonId := P mor(
+			P char('\''),
+			P char('"'),
+			P char('#'),
+			P char('('),
+			P char(')'),
+			P char('\n'),
+			P char('\r'),
+			P char('\t'),
+			P char(' '),
+			P char('/'),
+			P char('\\')
+		)
+
+		if(sugar)
+			nonId add(P mor(
+				P char('['),
+				P char(']'),
+				P char('{'),
+				P char('}')
+			))
+
+		// '0'-'z' && !('"' || '\'')
+		modes add(PLexerMatcherMode new(PTokenType id,
+			/*P or(
+				P or(
+					P range('0', '9'),
+					P range('A', 'z')
+				),
+				P mor(
+					P char(':'),
+					P char('='),
+					P char('@')
+				)
+			)*/
+			P not(nonId)
+		))
 	}
-	init: func {
-		modes add(PLexerAnyCharMode new(1))
+
+	leave: func {
+		if(mode != null)
+			mode leave(this)
+
+		mode = null
 	}
 
 	process: func(c: Char) -> Bool {
-		if(mode != null && mode process(c, this)) {
-			return true
-		} else {
+		processed := true
+
+		if(mode == null || !mode process(c, this)) {
+			leave()
+
+			processed = false
+
 			for(modeClass in modes) {
 				m := modeClass dup()
+				mode = m
+				m enter(this)
 				if(m process(c, this)) {
-					mode = m
-					return true
+					processed = true
+					break
+				} else {
+					mode = null
 				}
 			}
 		}
+		
+		offset += 1
+		column += 1
+		if(c == '\n' || c == '\r') {
+			line += 1
+			column = 1
+		}
 
-		return false
+		return processed
 	}
 
-	dup: func -> This { This new(mode) }
+	done: func { leave() }
 
-	tokens := ArrayList<PToken> new()
+	handlers := ArrayList<Func(PToken)> new()
 
-	emit: func(token: PToken) {
-		tokens add(token)
+	registerHandler: func(h: Func(PToken)) {
+		handlers add(h)
 	}
+
+	emit: func(tok: PToken) {
+		handlers each(|h| h(tok))
+	}
+
+	/*tokens := ArrayList<PToken> new()
+
+	emit: func(tok: PToken) {
+		tokens add(tok)
+	}*/
 }

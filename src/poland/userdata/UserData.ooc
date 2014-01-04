@@ -1,5 +1,8 @@
 PUserData: abstract class {
-	id: abstract func -> String
-	qid: func -> String { "#{class name}:#{id()}" }
+	id: func -> String { "" }
+	type: abstract func -> String
+	qid: func -> String { "#{type()}:#{id()}" }
 	toString: func -> String { qid() }
+
+	// TODO: serialization
 }

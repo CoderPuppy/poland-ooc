@@ -1,0 +1,84 @@
+[lang/Backtrace] Falling back on execinfo.. (build extension if you want fancy backtraces)
+[lang/Backtrace] Falling back on execinfo.. (build extension if you want fancy backtraces)
+[lang/Backtrace] Falling back on execinfo.. (build extension if you want fancy backtraces)
+[lang/Backtrace] Falling back on execinfo.. (build extension if you want fancy backtraces)
+(SIGSEGV) segmentation fault
+[lang/Backtrace] Falling back on execinfo.. (build extension if you want fancy backtraces)
+./test(lang_Backtrace__BacktraceHandler_backtrace_impl+0xcd) [0x45e0f1]
+./test(lang_Backtrace__BacktraceHandler_backtrace+0x20) [0x45ece9]
+./test(lang_Exception__Exception_getCurrentBacktrace+0x22) [0x44b623]
+./test(lang_Exception___signalHandler+0x1a7) [0x44c557]
+/lib/x86_64-linux-gnu/libc.so.6(+0x324f0) [0x7ff94948e4f0]
+./test(lang_Iterators__Iterator_hasNext__quest+0x13) [0x44eb8d]
+./test(poland_runtime_Object__PObject_receive_impl+0x17d) [0x43bf25]
+./test(poland_runtime_Object__PObject_receive+0x2e) [0x43c3da]
+./test(poland_runtime_Call__PCall_send_impl+0x23) [0x43c9bf]
+./test(poland_runtime_Call__PCall_send+0x23) [0x43ca64]
+./test(poland_userdata_Msg__PMsg_send_grs_impl+0x43) [0x43ecb5]
+./test(poland_userdata_Msg__PMsg_send_grs+0x40) [0x43efbb]
+./test(poland_userdata_Msg__PMsg_send_gr_impl+0x83) [0x43ed3a]
+./test(poland_userdata_Msg__PMsg_send_gr+0x38) [0x43eff5]
+./test(poland_userdata_MsgSeq__PMsgSeq_run_gc_impl+0x154) [0x43fa28]
+./test(poland_userdata_MsgSeq__PMsgSeq_run_gc+0x38) [0x43fbe6]
+./test(poland_userdata_MsgSeq__PMsgSeq_run_g_impl+0x2c) [0x43fa72]
+./test(poland_userdata_MsgSeq__PMsgSeq_run_g+0x33) [0x43fc1b]
+./test(test_load+0x35d) [0x43bb49]
+./test(main+0x1e) [0x43bc6c]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xfd) [0x7ff94947aead]
+./test() [0x43b70d]
+{ :'='({ :'R'() }, { :'Something'() :'create'() }) :'.'() :'R'() :'='({ :'Origin'() }, { :'Something'() :'create'() }) :'.'() :'R'() :'='({ :'DefaultBehavior'() }, { :'R'() :'Origin'() :'mimic'() }) :'.'() :'R'() :'DefaultBehavior'() :'='({ :'mimic'() }, { :'DefaultBehavior'() :'cell'({ :':mimic'() }) }) :'.'() :'R'() :'DefaultBehavior'() :'='({ :'cell'() }, { :'DefaultBehavior'() :'cell'({ :':cell'() }) }) :'.'() :'R'() :'='({ :'Mixin'() }, { :'R'() :'DefaultBehavior'() :'mimic'() }) :'.'() :'R'() :'DefaultBehavior'() :'='({ :'='() }, { :'rawFn'({ :'cell,'() :'val,'() :'.'() :'Reflector'() :'other:='({ :'self,'() :'cell,'() :'val'() }) :'.'() }) }) :'.'() :'R'() :'='({ :'Something'() }, { :'Something'() :'extend'() }) :'.'() :'R'() :'='({ :'Reflector'() }, { :'R'() :'Something'() :'create'() }) :'.'() :'R'() :'Reflector'() :'='({ :'other:mimic'() }, { :'Reflector'() :'cell'({ :':other:mimic'() }) }) :'.'() :'R'() :'='({ :'Interpreter'() }, { :'R'() :'Something'() :'create'() }) :'.'() :'R'() :'Interpreter'() :'='({ :'run'() }, { :'Interpreter'() :'cell'({ :':run'() }) }) :'.'() :'R'() :'Origin'() :'removeAllMimics'() :'.'() :'R'() :'.'() "hi"() }
+hmm
+false
+grr
+hmm
+false
+grr
+hmm
+false
+grr
+hmm
+false
+after
+hmm
+false
+grr
+hmm
+false
+grr
+hmm
+false
+grr
+huh
+running native function
+foo
+base receive: :'new'()
+rawr
+false
+after
+hmm
+false
+grr
+hmm
+false
+grr
+hmm
+false
+grr
+huh
+running native function
+foo
+set func
+rawr
+false
+after
+sending msg: :'='({ :'R'() }, { :'Something'() :'create'() }) to: poland:object:ykny3BsL0XC7
+huh
+running native function
+foo
+ground receiving message: :'='({ :'R'() }, { :'Something'() :'create'() })
+huh
+running native function
+foo
+ground receiving message: :'='({ :'R'() }, { :'Something'() :'create'() })
+rawr
+false
