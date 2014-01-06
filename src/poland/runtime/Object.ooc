@@ -9,7 +9,8 @@ PObject: class extends PUserData {
 	metafn: PObject
 	userdata: PUserData
 
-	init: func(args: ...) {
+	runtime: PRuntime
+	init: func(=runtime) {
 		arr := ArrayList<Char> new()
 		for(i in 0..12) {
 			arr add(Random randInt(0, 75) as Char + '0')
@@ -17,25 +18,25 @@ PObject: class extends PUserData {
 		_id = arr join()
 	}
 
-	/*toString: func -> String {
-		obj := send("toString")
-
-		if(obj == null)
-			return qid()
-
-		data := obj userdata
-
-		if(data == null) {
-			return obj toString()
-		} else {
-			return data toString()
-		}
-	}*/
-
 	id: func -> String { _id }
 	type: func -> String { "poland:object" }
+	dup: func -> This {
+		obj := This new(runtime)
 
-	send: func~objs(runtime: PRuntime, id: PUserData, args: ...) -> PObject {
+		obj _id = _id // todo: maybe?
+
+		for((k, v) in cells) {
+			obj cells[k] = v dup()
+		}
+
+		if(metafn != null) {
+			obj metafn = metafn dup()
+		}
+
+		obj
+	}
+
+	send: func~objs(id: PUserData, args: ...) -> PObject {
 		PCall fromObjects(runtime, this, id, args) send()
 	}
 
@@ -43,53 +44,32 @@ PObject: class extends PUserData {
 		PCall fromObjects~str(runtime, this, id, args) send()
 	}*/
 
-	send: func~sym_objs(runtime: PRuntime, id: String, args: ...) -> PObject {
+	send: func~sym_objs(id: String, args: ...) -> PObject {
 		PCall fromObjects~sym(runtime, this, id, args) send()
 	}
 
-	receive: func(call: PCall) -> PObject {
-		//"receiving #{call msg id}" println()
+	/*send: func~sym_blank(id: String) -> PObject {
+		PCall fromObjects~sym_blank(runtime, this, id) send()
+	}*/
 
+	receive: func(call: PCall) -> PObject {
 		fn := metafn
 
+		call toString() println()
+
+		if(call runtime != runtime) {
+			raise("that call is from the wrong runtime")
+		}
+
 		if(fn == null) {
-			"hmm" println()
-			iter := srcs iterator()
-			(iter == null) toString() println()
-			while(iter hasNext?()) {
-				src := iter next()
-				"grr" println()
-				try {
-					val := src receive(call)
-					if(val != null)
-						return val
-				} catch(e: Exception) {}
-				"rawr" println()
-				(iter == null) toString() println()
-			}
-
-			"after" println()
-
-			cell := this[call msg id]
-
-			if(cell == null) {
-				cell = call runtime Rnil
-			}
-
-			return cell
+			return BaseReceiveFunc new() activate(this, call)
 		} else {
-			"huh" println()
 			data := fn userdata
 
 			if(data != null && data instanceOf?(PNativeFunction)) {
-				"running native function" println()
-				
-				"foo" println()
-				val := data as PNativeFunction activate(this, call)
-				"bar" println()
-				val
+				data as PNativeFunction activate(this, call)
 			} else {
-				fn send(call runtime, "activate", call)
+				fn send("activate", call)
 			}
 		}
 	}
@@ -102,7 +82,7 @@ PObject: class extends PUserData {
 	}
 
 	mimic: func -> PObject {
-		PObject new() mimic!(this)
+		PObject new(runtime) mimic!(this)
 	}
 
 	cells := HashMap<String, PObject> new()
@@ -118,7 +98,7 @@ PObject: class extends PUserData {
 				}
 			}
 
-			return null
+			return runtime Rnil
 		}
 	}
 	operator []=(name: String, val: PObject) -> PObject {

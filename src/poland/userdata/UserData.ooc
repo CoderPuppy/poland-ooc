@@ -4,5 +4,7 @@ PUserData: abstract class {
 	qid: func -> String { "#{type()}:#{id()}" }
 	toString: func -> String { qid() }
 
+	dup: abstract func -> This
+
 	// TODO: serialization
 }

@@ -19,8 +19,8 @@ lexer registerHandler(|t|
 
 //str := "'test' 4789897*^*&%&^"
 
-file := File new("./poland/runtime.pd")
-//file := File new("./examples/test.pd")
+//file := File new("./poland/runtime.pd")
+file := File new("./examples/test.pd")
 
 str := file read()
 
@@ -39,8 +39,8 @@ seq toString() println()
 
 runtime := PRuntime new()
 
-ground := runtime createGround()
+ground := runtime RGround send("new")
 
-seq run(runtime, ground)// toString() println()
+seq run(runtime, ground) toString() println()
 
-(ground[PSymbol new("foo")] == null) toString() println()
+(ground[PSymbol new("foo")] == runtime Rnil) toString() println()

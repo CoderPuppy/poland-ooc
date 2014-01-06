@@ -1,22 +1,17 @@
-R = Something create
+R = Something new
 
-R Origin = Something create
+R Origin = Something new
 
 R DefaultBehavior = R Origin mimic
 R DefaultBehavior mimic = DefaultBehavior cell(:mimic)
 R DefaultBehavior cell = DefaultBehavior cell(:cell)
 
-R Mixin = R DefaultBehavior mimic
+R Something = R Kind new
 
-R DefaultBehavior = = rawFn(cell, val,
-	Reflector other:=(self, cell, val)
-)
-
-
-R Something = Something extend
-
-R Reflector = R Something create
+R Reflector = R Something new
 R Reflector other:mimic = Reflector cell(:other:mimic)
+
+R Ground = R Kind extend
 
 /# R Kind = new O
 # let @ = R Kind
@@ -27,7 +22,7 @@ R Reflector other:mimic = Reflector cell(:other:mimic)
 # 		@cells[\:initialize] = (call) ->
 # 			@cells[\:prototype] = new O(R Something)
 # 			@extend = R Kind.extend
-# 			@create = R Kind.create
+# 			@new = R Kind.new
 
 # 		@extend = ->
 # 			k = new O(R Kind::)
@@ -36,19 +31,19 @@ R Reflector other:mimic = Reflector cell(:other:mimic)
 
 # 			k
 
-# 		@create = ->
+# 		@new = ->
 # 			o = new O(@cell(\:prototype))
 
 # 			o.send(\initialize, ...)
 
 # 			o
 
-# 		@cells[\:create] = (call) ~>
+# 		@cells[\:new] = (call) ~>
 # 			self = call.receiver
 # 			msg  = call.msg
 # 			args = msg.args
 
-# 			@create.call(self, ...args)
+# 			@new.call(self, ...args)
 
 # 		@cells[\:extend] = (call) ~>
 # 			self = call.receiver
@@ -56,9 +51,9 @@ R Reflector other:mimic = Reflector cell(:other:mimic)
 # 			@extend.call(self)
 
 # 	@extend = @cell(\:prototype).extend
-# 	@create = @cell(\:prototype).create
+# 	@new = @cell(\:prototype).new
 
-# R Something = R Kind.create!
+# R Something = R Kind.new!
 # let @ = R Something
 # 	let @ = @cell(\:prototype)
 # 		@mimic R DefaultBehavior
@@ -76,7 +71,7 @@ R Reflector other:mimic = Reflector cell(:other:mimic)
 # 	# activate: (call) ->
 # 	# 	@fn(call)
 
-# 	# @::cells = Object.create(R DefaultBehavior::cells)
+# 	# @::cells = Object.new(R DefaultBehavior::cells)
 
 # R Call = R Something.extend!
 # 	# (@ground, @seq, @self, @msg) -> super!
@@ -118,19 +113,17 @@ R Reflector other:mimic = Reflector cell(:other:mimic)
 # # 		self = call.receiver
 # # 		self.cells[args[0].msgs[0].id.id!] = I(call.ground, args[1])
 
-# R Parser = R Something.create!
+# R Parser = R Something.new!
 # let @ = R Parser
 # 	@parse = parseR parse
 
-# 	@Shuffler = R Something.create!
+# 	@Shuffler = R Something.new!
 # 	let @ = @Shuffler
 # 		@assignment = shuffleR assignment#/
 
-R Interpreter = R Something create
+R Interpreter = R Something new
 R Interpreter run = Interpreter cell(:run)
 
 R Origin removeAllMimics
 
 R
-
-"hi"

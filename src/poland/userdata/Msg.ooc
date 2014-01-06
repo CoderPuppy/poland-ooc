@@ -6,13 +6,14 @@ PMsg: class extends PUserData {
 	id: PUserData
 	args := ArrayList<PMsgSeq> new()
 
+	init: func~args(=id, =args)
+	init: func(=id)
+
 	toString: func -> String { id toString() + "(" + args map(|seq| seq toString()) join(", ") + ")" }
 
 	id: func -> String { id id() + "(" + args map(|s| s id()) join(',') + ")" }
 	type: func -> String { "poland:msg" }
-
-	init: func~args(=id, =args)
-	init: func(=id)
+	dup: func -> This { This new(id dup(), args map(|seq| seq dup()) as ArrayList<PMsgSeq>) }
 
 	callFor: func~grs(runtime: PRuntime, ground: PObject, receiver: PObject, seq: PMsgSeq) -> PCall {
 		return PCall new(runtime, ground, seq, receiver, this)

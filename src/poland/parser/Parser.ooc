@@ -15,8 +15,6 @@ PParser: class {
 	}
 
 	enter: func(newMode: PParserMode) {
-		//"entering mode: #{newMode}" println()
-
 		oldMode: PParserMode
 		oldMode = stack empty?() ? null : stack peek()
 
@@ -36,8 +34,6 @@ PParser: class {
 	leave: func {
 		if(!stack empty?()) {
 			oldMode := stack pop()
-
-			//"leaving mode: #{oldMode}" println()
 
 			oldMode leave(this)
 
