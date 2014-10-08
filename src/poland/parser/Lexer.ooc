@@ -78,9 +78,9 @@ PLexer: class {
 			// '['
 			modes add(PLexerMatcherMode new(PTokenType openSquare, P char('[')))
 			// ']'
+			modes add(PLexerMatcherMode new(PTokenType closeSquare, P char(']')))
 		}
 
-		modes add(PLexerMatcherMode new(PTokenType closeSquare, P char(']')))
 		// ','
 		modes add(PLexerMatcherMode new(PTokenType comma, P char(',')))
 		// '/'
